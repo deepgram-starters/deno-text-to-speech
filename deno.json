@@ -1,0 +1,18 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-net --allow-read --allow-env --watch server.ts",
+    "start": "deno run --allow-net --allow-read --allow-env server.ts",
+    "check": "deno check server.ts",
+    "cache": "deno cache server.ts"
+  },
+  "imports": {
+    "@deepgram/sdk": "npm:@deepgram/sdk@4.11.2",
+    "dotenv": "jsr:@std/dotenv@^0.225.0",
+    "@iarna/toml": "npm:@iarna/toml@2.2.5"
+  },
+  "compilerOptions": {
+    "strict": true,
+    "lib": ["deno.window"]
+  },
+  "lock": true
+}
