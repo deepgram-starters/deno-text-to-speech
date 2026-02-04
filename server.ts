@@ -220,7 +220,16 @@ async function handleSynthesis(req: Request): Promise<Response> {
     });
   } catch (err) {
     console.error("Synthesis error:", err);
-    return formatErrorResponse(err as Error);
+    const error = err as Error;
+    const errorMsg = error.message.toLowerCase();
+
+    // Check if it's a Deepgram text length error
+    if (errorMsg.includes('too long') || errorMsg.includes('length') ||
+        errorMsg.includes('limit') || errorMsg.includes('exceed')) {
+      return formatErrorResponse(error, 400, 'TEXT_TOO_LONG');
+    }
+
+    return formatErrorResponse(error);
   }
 }
 
