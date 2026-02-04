@@ -1,7 +1,7 @@
 # Deno Text-to-Speech Makefile
 # Framework-agnostic commands for managing the project and git submodules
 
-.PHONY: help check-prereqs init install build start start-backend start-frontend clean status update
+.PHONY: help check check-prereqs init install build start start-backend start-frontend test clean status update
 
 # Default target: show help
 help:
@@ -17,6 +17,7 @@ help:
 	@echo "  make start-backend  Start backend server only"
 	@echo "  make start-frontend Start frontend server only"
 	@echo "  make build          Build frontend for production"
+	@echo "  make test           Run contract conformance tests"
 	@echo ""
 	@echo "Maintenance:"
 	@echo "  make update         Update submodules to latest commits"
@@ -30,6 +31,9 @@ check-prereqs:
 	@command -v deno >/dev/null 2>&1 || { echo "❌ deno is required but not installed. Visit https://deno.land"; exit 1; }
 	@command -v pnpm >/dev/null 2>&1 || { echo "⚠️  pnpm not found. Run: corepack enable"; exit 1; }
 	@echo "✓ All prerequisites installed"
+
+# Alias for check-prereqs (contract compliance)
+check: check-prereqs
 
 # Initialize project: clone submodules and cache dependencies
 init:
@@ -86,6 +90,19 @@ update:
 	@echo "==> Updating submodules..."
 	git submodule update --remote --merge
 	@echo "✓ Submodules updated"
+
+# Run contract conformance tests
+test:
+	@if [ ! -f ".env" ]; then \
+		echo "❌ Error: .env file not found. Copy sample.env to .env and add your DEEPGRAM_API_KEY"; \
+		exit 1; \
+	fi
+	@if [ ! -d "contracts" ] || [ -z "$$(ls -A contracts)" ]; then \
+		echo "❌ Error: Contracts submodule not initialized. Run 'make init' first."; \
+		exit 1; \
+	fi
+	@echo "==> Running contract conformance tests..."
+	@bash contracts/tests/run-text-to-speech-app.sh
 
 # Clean build artifacts
 clean:
