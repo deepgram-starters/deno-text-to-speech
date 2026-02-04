@@ -1,7 +1,7 @@
 # Deno Text-to-Speech Makefile
 # Framework-agnostic commands for managing the project and git submodules
 
-.PHONY: help check check-prereqs init install build start start-backend start-frontend test clean status update
+.PHONY: help check check-prereqs init install build start start-backend start-frontend test update clean status
 
 # Default target: show help
 help:
@@ -52,6 +52,9 @@ init:
 	@echo "  1. Copy sample.env to .env and add your DEEPGRAM_API_KEY"
 	@echo "  2. Run 'make start' to start development servers"
 	@echo ""
+
+# Alias for init (contract compliance)
+install: init
 
 # Build frontend for production
 build:
