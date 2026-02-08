@@ -2,7 +2,7 @@
   "version": "5",
   "specifiers": {
     "jsr:@std/dotenv@0.225": "0.225.6",
-    "npm:@deepgram/sdk@4.11.2": "4.11.2",
+    "npm:@deepgram/sdk@4.11.3": "4.11.3",
     "npm:@iarna/toml@2.2.5": "2.2.5"
   },
   "jsr": {
@@ -17,8 +17,8 @@
         "dayjs"
       ]
     },
-    "@deepgram/sdk@4.11.2": {
-      "integrity": "sha512-lKGxuXxlSixC8bB0BnzmIpbVjUSgYtz17cqvrgv0ZjmazgUPkuUj9egQPj6k+fbPX8wRzWEqlhrL/DXlXqeDXA==",
+    "@deepgram/sdk@4.11.3": {
+      "integrity": "sha512-7NujHlAX6ciBeYAkxkhE7LCZWy0JK3nvFsV2VwVZIUiFR40ykhep5fxYd7ZovM+PbNyCoM8GKNMHu9MeQ5/wTQ==",
       "dependencies": [
         "@deepgram/captions",
         "@types/node",
@@ -81,7 +81,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@std/dotenv@0.225",
-      "npm:@deepgram/sdk@4.11.2",
+      "npm:@deepgram/sdk@4.11.3",
       "npm:@iarna/toml@2.2.5"
     ]
   }
