@@ -6,11 +6,10 @@
  * modified and extended for your own projects.
  *
  * Key Features:
- * - API endpoint: POST /tts/synthesize
+ * - API endpoint: POST /api/text-to-speech
  * - Accepts text in body and model as query parameter
  * - Returns binary audio data (application/octet-stream)
- * - Proxies to Vite dev server in development
- * - Serves static frontend in production
+ * - CORS-enabled for frontend on port 8080
  * - Native TypeScript support
  * - No external web framework needed
  */
@@ -39,13 +38,11 @@ const DEFAULT_MODEL = "aura-2-thalia-en";
 interface ServerConfig {
   port: number;
   host: string;
-  frontendPort: number;
 }
 
 const config: ServerConfig = {
   port: parseInt(Deno.env.get("PORT") || "8081"),
   host: Deno.env.get("HOST") || "0.0.0.0",
-  frontendPort: parseInt(Deno.env.get("FRONTEND_PORT") || "8080"),
 };
 
 // ============================================================================
@@ -89,10 +86,9 @@ const deepgram = createClient(apiKey);
  */
 function getCorsHeaders(): HeadersInit {
   return {
-    "Access-Control-Allow-Origin": `http://localhost:${config.frontendPort}`,
+    "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Allow-Credentials": "true",
   };
 }
 
@@ -158,7 +154,7 @@ function formatErrorResponse(
 // ============================================================================
 
 /**
- * POST /tts/synthesize
+ * POST /api/text-to-speech
  * Main text-to-speech endpoint
  */
 async function handleSynthesis(req: Request): Promise<Response> {
@@ -292,7 +288,7 @@ async function handleRequest(req: Request): Promise<Response> {
   }
 
   // API Routes
-  if (req.method === "POST" && url.pathname === "/tts/synthesize") {
+  if (req.method === "POST" && url.pathname === "/api/text-to-speech") {
     return handleSynthesis(req);
   }
 
@@ -313,8 +309,7 @@ async function handleRequest(req: Request): Promise<Response> {
 
 console.log("\n" + "=".repeat(70));
 console.log(`🚀 Backend API Server running at http://localhost:${config.port}`);
-console.log(`📡 CORS enabled for http://localhost:${config.frontendPort}`);
-console.log(`\n💡 Frontend should be running on http://localhost:${config.frontendPort}`);
+console.log(`📡 CORS enabled for all origins`);
 console.log("=".repeat(70) + "\n");
 
 Deno.serve({ port: config.port, hostname: config.host }, handleRequest);
