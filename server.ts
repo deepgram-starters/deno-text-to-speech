@@ -15,7 +15,7 @@
  * - No external web framework needed
  */
 
-import { createClient } from "@deepgram/sdk";
+import { DeepgramClient } from "@deepgram/sdk";
 import { load } from "dotenv";
 import TOML from "npm:@iarna/toml@2.2.5";
 import * as jose from "jose";
@@ -117,7 +117,7 @@ const apiKey = loadApiKey();
 // SETUP - Initialize Deepgram client
 // ============================================================================
 
-const deepgram = createClient(apiKey);
+const deepgram = new DeepgramClient({ apiKey });
 
 // ============================================================================
 // CORS CONFIGURATION
@@ -262,38 +262,9 @@ async function handleSynthesis(req: Request): Promise<Response> {
       );
     }
 
-    // Send synthesis request to Deepgram
-    const response = await deepgram.speak.request(
-      { text },
-      {
-        model,
-      }
-    );
-
-    // Get audio stream
-    const stream = await response.getStream();
-    if (!stream) {
-      throw new Error("No audio stream returned from Deepgram");
-    }
-
-    // Convert stream to Uint8Array
-    const reader = stream.getReader();
-    const chunks: Uint8Array[] = [];
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      chunks.push(value);
-    }
-
-    // Concatenate all chunks
-    const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
-    const audioData = new Uint8Array(totalLength);
-    let offset = 0;
-    for (const chunk of chunks) {
-      audioData.set(chunk, offset);
-      offset += chunk.length;
-    }
+    // Send synthesis request to Deepgram (SDK v5)
+    const response = await deepgram.speak.v1.audio.generate({ text, model });
+    const audioData = new Uint8Array(await response.arrayBuffer());
 
     // Return audio data
     return new Response(audioData, {
