@@ -6,7 +6,7 @@ repository = "https://github.com/deepgram-starters/deno-text-to-speech"
 useCase = "text-to-speech"
 language = "typescript"
 framework = "deno"
-sdk = "4.11.3"
+sdk = "5.7.0"
 tags = ["text-to-speech", "tts", "speech-synthesis", "typescript", "deno"]
 
 [install.pre]

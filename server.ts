@@ -15,7 +15,7 @@
  * - No external web framework needed
  */
 
-import { createClient } from "@deepgram/sdk";
+import { DeepgramClient } from "@deepgram/sdk";
 import { load } from "dotenv";
 import TOML from "npm:@iarna/toml@2.2.5";
 import * as jose from "jose";
@@ -117,7 +117,7 @@ const apiKey = loadApiKey();
 // SETUP - Initialize Deepgram client
 // ============================================================================
 
-const deepgram = createClient(apiKey);
+const deepgram = new DeepgramClient({ apiKey });
 
 // ============================================================================
 // CORS CONFIGURATION
@@ -263,15 +263,13 @@ async function handleSynthesis(req: Request): Promise<Response> {
     }
 
     // Send synthesis request to Deepgram
-    const response = await deepgram.speak.request(
-      { text },
-      {
-        model,
-      }
-    );
+    const response = await deepgram.speak.v1.audio.generate({
+      text,
+      model,
+    });
 
-    // Get audio stream
-    const stream = await response.getStream();
+    // Get audio stream (web ReadableStream of the binary audio)
+    const stream = response.stream();
     if (!stream) {
       throw new Error("No audio stream returned from Deepgram");
     }
